@@ -1,13 +1,6 @@
 import React from "react";
 
-export default function NewsCard({
-  category,
-  title,
-  count,
-  image,
-  summary,
-  sources,
-}) {
+export default function NewsCard({ category, title, count, image, sources }) {
   return (
     <div
       style={{
@@ -86,14 +79,33 @@ export default function NewsCard({
         }}
       />
 
+      {/* 언론사별 제목 출력 */}
       <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-        {summary?.slice(0, 5).map((item, i) => (
+        {sources?.slice(0, 5).map((source, i) => (
           <li key={i} style={{ marginBottom: "0.75rem" }}>
-            <div style={{ fontSize: "0.85rem", color: "#333" }}>{item}</div>
-            <div
-              style={{ fontSize: "10pt", color: "#000", fontWeight: "bold" }}
-            >
-              {sources?.[i] ?? ""}
+            <div style={{ margin: "2rem 1rem" }}>
+              <div style={{ fontSize: "0.85rem", color: "#333" }}>{title}</div>
+              <div
+                style={{ fontSize: "10pt", color: "#000", fontWeight: "bold" }}
+              >
+                {sources?.[i] ?? ""}
+              </div>
+            </div>
+            <div style={{ margin: "2rem 1rem" }}>
+              <div style={{ fontSize: "0.85rem", color: "#333" }}>{title}</div>
+              <div
+                style={{ fontSize: "10pt", color: "#000", fontWeight: "bold" }}
+              >
+                {sources?.[i] ?? ""}
+              </div>
+            </div>
+            <div style={{ margin: "2rem 1rem" }}>
+              <div style={{ fontSize: "0.85rem", color: "#333" }}>{title}</div>
+              <div
+                style={{ fontSize: "10pt", color: "#000", fontWeight: "bold" }}
+              >
+                {sources?.[i] ?? ""}
+              </div>
             </div>
           </li>
         ))}

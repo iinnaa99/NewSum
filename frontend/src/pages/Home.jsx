@@ -27,7 +27,7 @@ export default function Home() {
 
         {/* 오른쪽: 언론사별 */}
         <div style={{ flex: "1 1 48%", minWidth: "350px" }}>
-          {/* <PressNews /> */}
+          {/* <PressNews />*/}
         </div>
       </div>
     </div>

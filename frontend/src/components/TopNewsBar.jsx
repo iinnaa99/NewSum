@@ -1,30 +1,18 @@
-import React, { useEffect, useState, useRef } from "react"; // ✅ useRef 추가
-import { collection, getDocs, query, orderBy, limit } from "firebase/firestore";
-import { db } from "../firebase/firebaseConfig";
+import React, { useEffect, useState, useRef } from "react";
 
 export default function TopNewsBar() {
   const [topNews, setTopNews] = useState([]);
-  const fetchedRef = useRef(false); // ✅ 중복 방지용 ref
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
-    if (fetchedRef.current) return; // ✅ 이미 불렀으면 무시
+    if (fetchedRef.current) return;
     fetchedRef.current = true;
 
     const fetchTopNews = async () => {
       try {
-        const q = query(
-          collection(db, "news"),
-          orderBy("count", "desc"),
-          limit(10)
-        );
-
-        const querySnapshot = await getDocs(q);
-        const newsArray = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setTopNews(newsArray);
+        const response = await fetch("http://localhost:3001/api/news/top10");
+        const data = await response.json();
+        setTopNews(data);
       } catch (error) {
         console.error("🔥 Top 뉴스 불러오기 실패:", error);
       }
