@@ -1,9 +1,24 @@
 #root {
   margin: 0;
   padding: 0;
-  
+
   height: 100%;
   box-sizing: border-box;
+}
+
+/* App.css */
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px; /* 필요시 제한 가능 */
+  margin: 0 auto;
+  padding: 1rem;
 }
 
 .logo {
@@ -40,4 +55,18 @@
 
 .read-the-docs {
   color: #888;
+}
+
+/* App.css */
+.section-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+@media screen and (max-width: 768px) {
+  .section-wrapper {
+    flex-direction: column;
+  }
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import NewsCard from "./NewsCard";
+import NewsModal from "./NewsModal"; // 팝업창 컴포넌트 불러오기
 
 // 카테고리 목록
 export const categories = [
@@ -17,7 +18,8 @@ export const categories = [
 export default function CategoryCards() {
   const [selectedCategory, setSelectedCategory] = useState("전체");
   const [allNews, setAllNews] = useState([]);
-  const [page, setPage] = useState(0);
+  const [categoryPage, setCategoryPage] = useState(0);
+  const [selectedTitle, setSelectedTitle] = useState(null); // 🔹 모달용 상태
   const cardsPerPage = 3;
 
   // ✅ MySQL API에서 뉴스 가져오기
@@ -41,27 +43,45 @@ export default function CategoryCards() {
       ? allNews
       : allNews.filter((card) => card.category_name === selectedCategory);
 
-  const totalPages = Math.ceil(filteredCards.length / cardsPerPage);
-
   const pagedCards = filteredCards.slice(
-    page * cardsPerPage,
-    page * cardsPerPage + cardsPerPage
+    categoryPage,
+    categoryPage + cardsPerPage
   );
 
-  const handleNext = () => setPage((prev) => (prev + 1) % totalPages);
-  const handlePrev = () =>
-    setPage((prev) => (prev - 1 + totalPages) % totalPages);
+  const handleCategoryNext = () => {
+    if (categoryPage < filteredCards.length - cardsPerPage) {
+      setCategoryPage((prev) => prev + 1);
+    }
+  };
+
+  const handleCategoryPrev = () => {
+    if (categoryPage > 0) {
+      setCategoryPage((prev) => prev - 1);
+    }
+  };
+
+  const handleTitleClick = (news) => {
+    if (!news) return;
+    const { title, link, press_name, upload_date } = news;
+
+    setSelectedTitle({
+      title,
+      link,
+      press: press_name,
+      upload_date,
+    });
+  };
 
   return (
     <div>
       <h2>주제별</h2>
-      <div>
+      <div style={{ marginBottom: "1.4rem" }}>
         {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => {
               setSelectedCategory(cat);
-              setPage(0);
+              setCategoryPage(0);
             }}
             style={{
               margin: "0 6px",
@@ -76,30 +96,55 @@ export default function CategoryCards() {
       <div
         style={{
           display: "flex",
-          gap: "12px",
-          marginTop: "12px",
           flexWrap: "wrap",
+          gap: "12px",
+          justifyContent: "center",
         }}
       >
         {pagedCards.map((card) => (
           <NewsCard
             key={card.id}
-            category={card.category_name}
             title={card.title}
-            count={card.count}
+            link={card.link}
             image={card.photo_link}
+            category={card.category_name}
+            count={filteredCards.length}
             sources={[card.press_name ?? "언론사 미표시"]}
+            onTitleClick={handleTitleClick}
           />
         ))}
       </div>
 
       <div style={{ textAlign: "center", marginTop: "12px" }}>
-        <button onClick={handlePrev}>⬅️</button>
+        <button onClick={handleCategoryPrev} disabled={categoryPage === 0}>
+          ⬅️
+        </button>
         <span style={{ margin: "0 10px" }}>
-          {totalPages > 0 ? page + 1 : 0} / {totalPages}
+          {filteredCards.length > 0
+            ? `${Math.min(
+                categoryPage + 1,
+                filteredCards.length - cardsPerPage + 1
+              )} / ${Math.max(filteredCards.length - cardsPerPage + 1, 1)}`
+            : "0 / 0"}
         </span>
-        <button onClick={handleNext}>➡️</button>
+        <button
+          onClick={handleCategoryNext}
+          disabled={categoryPage >= filteredCards.length - cardsPerPage}
+        >
+          ➡️
+        </button>
       </div>
+
+      {/* 🔹 모달 컴포넌트 추가 */}
+      {selectedTitle && (
+        <NewsModal
+          title={selectedTitle.title}
+          link={selectedTitle.link}
+          press={selectedTitle.press}
+          upload_date={selectedTitle.upload_date}
+          onClose={() => setSelectedTitle(null)}
+        />
+      )}
     </div>
   );
 }

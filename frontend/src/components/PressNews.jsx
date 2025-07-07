@@ -1,119 +1,91 @@
 import React, { useEffect, useState } from "react";
-import PressNewsCard from "./PressNewsCard";
+import axios from "axios";
+import PressGroupCard from "./PressGroupCard"; // 언론사 단위 카드 컴포넌트
+import NewsModal from "./NewsModal"; // 모달 import 추가
 
 export default function PressNews() {
-  const [allNews, setAllNews] = useState([]);
-  const [selectedPress, setSelectedPress] = useState("전체");
+  const [groupedNews, setGroupedNews] = useState({});
   const [page, setPage] = useState(0);
-  const cardsPerPage = 3;
+  const [selectedTitle, setSelectedTitle] = useState(null); // 선택된 뉴스
+  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
+  const groupsPerPage = 3; // 한 페이지에 보여줄 언론사 그룹 수
+
+  const handleTitleClick = (title) => {
+    setSelectedTitle(title);
+    setIsModalOpen(true);
+  };
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const q = query(collection(db, "news"), orderBy("upload_date", "desc"));
-        const snapshot = await getDocs(q);
-        const newsList = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setAllNews(newsList);
+        const res = await axios.get("http://localhost:3001/api/news/press");
+        const rows = res.data;
+
+        const grouped = {};
+        rows.forEach((item) => {
+          const press = item.press_name || "기타 언론사";
+          if (!grouped[press]) grouped[press] = [];
+          grouped[press].push(item);
+        });
+
+        setGroupedNews(grouped);
       } catch (err) {
-        console.error("🔥 언론사별 뉴스 불러오기 실패:", err);
+        console.error("🔥 언론사별 뉴스 API 실패:", err);
       }
     };
 
     fetchNews();
   }, []);
 
-  const pressList = Array.from(
-    new Set(allNews.map((item) => item.press?.press_name || "기타 언론사"))
+  const pressNames = Object.keys(groupedNews);
+  const totalPages = Math.ceil(pressNames.length / groupsPerPage);
+  const pagedPressNames = pressNames.slice(
+    page * groupsPerPage,
+    (page + 1) * groupsPerPage
   );
 
-  const filteredNews =
-    selectedPress === "전체"
-      ? allNews
-      : allNews.filter(
-          (news) => (news.press?.press_name || "기타 언론사") === selectedPress
-        );
-
-  const totalPages = Math.ceil(filteredNews.length / cardsPerPage);
-  const pagedNews = filteredNews.slice(
-    page * cardsPerPage,
-    page * cardsPerPage + cardsPerPage
-  );
-
-  const handleNext = () => setPage((prev) => (prev + 1) % totalPages);
-  const handlePrev = () =>
-    setPage((prev) => (prev - 1 + totalPages) % totalPages);
+  const handlePrev = () => setPage((prev) => Math.max(prev - 1, 0));
+  const handleNext = () =>
+    setPage((prev) => Math.min(prev + 1, totalPages - 1));
 
   return (
-    <div style={{ padding: "1rem" }}>
+    <div>
       <h2>언론사별</h2>
-
-      {/* 언론사 버튼 */}
-      <div style={{ marginBottom: "1rem", visibility: "hidden" }}>
-        {["전체", ...pressList].map((press) => (
-          <button
-            key={press}
-            onClick={() => {
-              setSelectedPress(press);
-              setPage(0);
-            }}
-            style={{
-              margin: "0 6px 6px 0",
-              fontWeight: selectedPress === press ? "bold" : "normal",
-              padding: "6px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "6px",
-              backgroundColor: selectedPress === press ? "#f0f0f0" : "#fff",
-              cursor: "pointer",
-            }}
-          >
-            {press}
-          </button>
-        ))}
-      </div>
-
-      {/* 선택된 언론사 이름 표시 */}
-      {selectedPress !== "전체" && (
-        <h3
-          style={{ marginBottom: "0.5rem", fontWeight: "bold", color: "#222" }}
-        >
-          {selectedPress}
-        </h3>
-      )}
-
-      {/* 뉴스 카드 3개씩 표시 */}
       <div
         style={{
           display: "flex",
-          gap: "12px",
-          marginTop: "12px",
           flexWrap: "wrap",
+          gap: "12px",
+          justifyContent: "center", // ← 가운데 정렬
         }}
       >
-        {pagedNews.map((news) => (
-          <PressNewsCard
-            key={news.id}
-            press={news.press?.press_name || "기타 언론사"}
-            image={news.photo_link}
-            count={filteredNews.length}
-            titles={filteredNews.map((n) => ({
-              title: n.title,
-              press: n.press?.press_name || "기타 언론사",
-            }))}
+        {pagedPressNames.map((pressName) => (
+          <PressGroupCard
+            key={pressName}
+            pressName={pressName}
+            articles={groupedNews[pressName]}
+            onTitleClick={handleTitleClick}
           />
         ))}
       </div>
 
-      {/* 페이지 네비게이션 */}
       <div style={{ textAlign: "center", marginTop: "12px" }}>
-        <button onClick={handlePrev}>⬅️</button>
-        <span style={{ margin: "0 10px" }}>
-          {totalPages > 0 ? page + 1 : 0} / {totalPages}
+        <button onClick={handlePrev} disabled={page === 0}>
+          ⬅️
+        </button>
+        <span style={{ margin: "0 0 10px" }}>
+          {page + 1} / {totalPages}
         </span>
-        <button onClick={handleNext}>➡️</button>
+        <button onClick={handleNext} disabled={page === totalPages - 1}>
+          ➡️
+        </button>
       </div>
+      {isModalOpen && (
+        <NewsModal
+          title={selectedTitle}
+          onClose={() => setIsModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

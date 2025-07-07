@@ -58,7 +58,7 @@ export default function TopNewsBar() {
         }}
       >
         {/* 왼쪽 열 */}
-        <ol style={{ listStyle: "none", padding: 0, margin: 0, width: "45%" }}>
+        <ol style={{ listStyle: "none", padding: 0, margin: 0, width: "48%" }}>
           {leftNews.map((news, i) => (
             <li
               key={news.id}
@@ -68,7 +68,7 @@ export default function TopNewsBar() {
                 alignItems: "center",
                 padding: "0.5rem 1rem",
                 marginBottom: "0.5rem",
-                fontSize: "0.9rem",
+                fontSize: "1.1rem",
               }}
             >
               <span
@@ -85,7 +85,13 @@ export default function TopNewsBar() {
                 </strong>
                 {news.title}
               </span>
-              <span style={{ color: "#aaa", whiteSpace: "nowrap" }}>
+              <span
+                style={{
+                  whiteSpace: "nowrap",
+                  color: "#007bff",
+                  fontWeight: "bold",
+                }}
+              >
                 {news.count ?? 0}건
               </span>
             </li>
@@ -93,7 +99,7 @@ export default function TopNewsBar() {
         </ol>
 
         {/* 오른쪽 열 */}
-        <ol style={{ listStyle: "none", padding: 0, margin: 0, width: "45%" }}>
+        <ol style={{ listStyle: "none", padding: 0, margin: 0, width: "48%" }}>
           {rightNews.map((news, i) => (
             <li
               key={news.id}
@@ -103,7 +109,7 @@ export default function TopNewsBar() {
                 alignItems: "center",
                 padding: "0.5rem 1rem",
                 marginBottom: "0.5rem",
-                fontSize: "0.9rem",
+                fontSize: "1.1rem",
               }}
             >
               <span
@@ -120,7 +126,13 @@ export default function TopNewsBar() {
                 </strong>
                 {news.title}
               </span>
-              <span style={{ color: "#aaa", whiteSpace: "nowrap" }}>
+              <span
+                style={{
+                  whiteSpace: "nowrap",
+                  color: "#007bff",
+                  fontWeight: "bold",
+                }}
+              >
                 {news.count ?? 0}건
               </span>
             </li>

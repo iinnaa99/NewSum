@@ -1,6 +1,14 @@
 import React from "react";
 
-export default function NewsCard({ category, title, count, image, sources }) {
+export default function NewsCard({
+  category,
+  title,
+  count,
+  image,
+  sources,
+  link,
+  onTitleClick,
+}) {
   return (
     <div
       style={{
@@ -9,7 +17,7 @@ export default function NewsCard({ category, title, count, image, sources }) {
         borderRadius: "12px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
         minWidth: "280px",
-        maxWidth: "340px",
+        maxWidth: "280px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -25,7 +33,7 @@ export default function NewsCard({ category, title, count, image, sources }) {
           padding: "0.3rem 0.6rem",
           borderRadius: "999px",
           margin: "1rem",
-          width: "10%",
+          width: "18%",
           textAlign: "center",
         }}
       >
@@ -41,12 +49,21 @@ export default function NewsCard({ category, title, count, image, sources }) {
       >
         {/* 제목 */}
         <h4
+          onClick={() =>
+            onTitleClick?.({
+              title,
+              link,
+              press: sources?.[0] ?? "",
+              upload_date: new Date().toISOString(), // 없으면 임시로라도 전달
+            })
+          }
           style={{
             margin: "0.25rem 0 0 0",
             fontSize: "1rem",
             fontWeight: "bold",
             lineHeight: "1.4",
             margin: "1rem",
+            cursor: "pointer",
           }}
         >
           {title}
@@ -71,45 +88,85 @@ export default function NewsCard({ category, title, count, image, sources }) {
         src={image}
         alt="뉴스 이미지"
         style={{
-          width: "100%",
+          width: "95%",
           height: "140px",
           objectFit: "cover",
           borderRadius: "8px",
-          margin: "0.5rem 0",
+          margin: "0.5rem",
         }}
       />
 
       {/* 언론사별 제목 출력 */}
-      <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
-        {sources?.slice(0, 5).map((source, i) => (
-          <li key={i} style={{ marginBottom: "0.75rem" }}>
-            <div style={{ margin: "2rem 1rem" }}>
-              <div style={{ fontSize: "0.85rem", color: "#333" }}>{title}</div>
-              <div
-                style={{ fontSize: "10pt", color: "#000", fontWeight: "bold" }}
-              >
-                {sources?.[i] ?? ""}
+      <div style={{ padding: "0.2rem" }}>
+        <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
+          {sources?.slice(0, 3).map((source, i) => (
+            <li key={i} style={{ marginBottom: "0.75rem" }}>
+              <div style={{ margin: "1rem" }}>
+                <div
+                  onClick={() => onTitleClick?.({ title, source })}
+                  style={{
+                    fontSize: "0.85rem",
+                    color: "#333",
+                    cursor: "pointer",
+                  }}
+                >
+                  {title}
+                </div>
+                <div
+                  style={{
+                    fontSize: "10pt",
+                    color: "#000",
+                    fontWeight: "bold",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  {source}
+                </div>
+                <div
+                  onClick={() => onTitleClick?.({ title, source })}
+                  style={{
+                    fontSize: "0.85rem",
+                    color: "#333",
+                    cursor: "pointer",
+                  }}
+                >
+                  {title}
+                </div>
+                <div
+                  style={{
+                    fontSize: "10pt",
+                    color: "#000",
+                    fontWeight: "bold",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  {source}
+                </div>
+                <div
+                  onClick={() => onTitleClick?.({ title, source })}
+                  style={{
+                    fontSize: "0.85rem",
+                    color: "#333",
+                    cursor: "pointer",
+                  }}
+                >
+                  {title}
+                </div>
+                <div
+                  style={{
+                    fontSize: "10pt",
+                    color: "#000",
+                    fontWeight: "bold",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  {source}
+                </div>
               </div>
-            </div>
-            <div style={{ margin: "2rem 1rem" }}>
-              <div style={{ fontSize: "0.85rem", color: "#333" }}>{title}</div>
-              <div
-                style={{ fontSize: "10pt", color: "#000", fontWeight: "bold" }}
-              >
-                {sources?.[i] ?? ""}
-              </div>
-            </div>
-            <div style={{ margin: "2rem 1rem" }}>
-              <div style={{ fontSize: "0.85rem", color: "#333" }}>{title}</div>
-              <div
-                style={{ fontSize: "10pt", color: "#000", fontWeight: "bold" }}
-              >
-                {sources?.[i] ?? ""}
-              </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* 버튼 2개 */}
       <div

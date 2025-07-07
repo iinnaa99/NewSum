@@ -9,7 +9,7 @@ export default function PressNewsCard({ press, image, count, titles }) {
         borderRadius: "12px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
         minWidth: "280px",
-        maxWidth: "340px",
+        maxWidth: "280px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -39,21 +39,30 @@ export default function PressNewsCard({ press, image, count, titles }) {
         <img
           src={image}
           alt="뉴스 이미지"
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          style={{
+            width: "95%",
+            height: "140px",
+            objectFit: "cover",
+            borderRadius: "8px",
+            margin: "0.5rem",
+          }}
         />
       </div>
 
       {/* 뉴스 리스트 */}
-      <div style={{ padding: "0.75rem" }}>
+      <div style={{ padding: "0.2rem" }}>
         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
           {titles?.slice(0, 3).map((item, index) => (
-            <li key={index} style={{ marginBottom: "0.5rem" }}>
+            <li key={index} style={{ margin: "1rem" }}>
               <div
+                key={index}
+                onClick={() => onTitleClick?.({ title: item.title })}
                 style={{
                   flex: 1,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
+                  cursor: "pointer",
                 }}
                 title={item.title}
               >
