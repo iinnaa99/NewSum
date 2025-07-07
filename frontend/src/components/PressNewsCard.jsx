@@ -1,6 +1,12 @@
 import React from "react";
 
-export default function PressNewsCard({ press, image, count, titles }) {
+export default function PressNewsCard({
+  press,
+  image,
+  count,
+  titles = [],
+  onTitleClick,
+}) {
   return (
     <div
       style={{
@@ -56,7 +62,7 @@ export default function PressNewsCard({ press, image, count, titles }) {
             <li key={index} style={{ margin: "1rem" }}>
               <div
                 key={index}
-                onClick={() => onTitleClick?.({ title: item.title })}
+                onClick={() => onTitleClick(item)}
                 style={{
                   flex: 1,
                   whiteSpace: "nowrap",

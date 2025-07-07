@@ -23,7 +23,7 @@ export default function Home() {
         }}
       >
         <Header />
-        <TopNewsBar />
+        <TopNewsBar onTitleClick={setSelectedNews} />
 
         {/* 주제별 + 언론사별 레이아웃 */}
         <div

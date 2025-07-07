@@ -80,10 +80,14 @@ export default function PressNews() {
           ➡️
         </button>
       </div>
-      {isModalOpen && (
+      {/* 🔹 모달 컴포넌트 추가 */}
+      {selectedTitle && (
         <NewsModal
-          title={selectedTitle}
-          onClose={() => setIsModalOpen(false)}
+          title={selectedTitle.title}
+          link={selectedTitle.link}
+          press={selectedTitle.press}
+          upload_date={selectedTitle.upload_date}
+          onClose={() => setSelectedTitle(null)}
         />
       )}
     </div>

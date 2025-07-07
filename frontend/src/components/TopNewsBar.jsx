@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 
-export default function TopNewsBar() {
+export default function TopNewsBar({ onTitleClick }) {
   const [topNews, setTopNews] = useState([]);
   const fetchedRef = useRef(false);
 
@@ -21,8 +21,53 @@ export default function TopNewsBar() {
     fetchTopNews();
   }, []);
 
+  const handleClick = (article) => {
+    onTitleClick?.(article); // 모달 열기
+  };
+
   const leftNews = topNews.slice(0, 5);
   const rightNews = topNews.slice(5, 10);
+
+  const renderList = (newsArray, startIndex) =>
+    newsArray.map((news, i) => (
+      <li
+        key={news.id}
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "0.5rem 1rem",
+          marginBottom: "0.5rem",
+          fontSize: "1.1rem",
+          cursor: "pointer",
+        }}
+        onClick={() => handleClick(news)}
+      >
+        <span
+          style={{
+            display: "inline-block",
+            maxWidth: "80%",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
+          }}
+        >
+          <strong style={{ marginRight: "0.75rem", color: "#ccc" }}>
+            {startIndex + i}
+          </strong>
+          {news.title}
+        </span>
+        <span
+          style={{
+            whiteSpace: "nowrap",
+            color: "#007bff",
+            fontWeight: "bold",
+          }}
+        >
+          {news.count ?? 0}건
+        </span>
+      </li>
+    ));
 
   return (
     <div style={{ width: "100%", margin: "1rem" }}>
@@ -57,86 +102,11 @@ export default function TopNewsBar() {
           borderRadius: "1rem",
         }}
       >
-        {/* 왼쪽 열 */}
         <ol style={{ listStyle: "none", padding: 0, margin: 0, width: "48%" }}>
-          {leftNews.map((news, i) => (
-            <li
-              key={news.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "0.5rem 1rem",
-                marginBottom: "0.5rem",
-                fontSize: "1.1rem",
-              }}
-            >
-              <span
-                style={{
-                  display: "inline-block",
-                  maxWidth: "80%",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                <strong style={{ marginRight: "0.75rem", color: "#ccc" }}>
-                  {i + 1}
-                </strong>
-                {news.title}
-              </span>
-              <span
-                style={{
-                  whiteSpace: "nowrap",
-                  color: "#007bff",
-                  fontWeight: "bold",
-                }}
-              >
-                {news.count ?? 0}건
-              </span>
-            </li>
-          ))}
+          {renderList(leftNews, 1)}
         </ol>
-
-        {/* 오른쪽 열 */}
         <ol style={{ listStyle: "none", padding: 0, margin: 0, width: "48%" }}>
-          {rightNews.map((news, i) => (
-            <li
-              key={news.id}
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: "0.5rem 1rem",
-                marginBottom: "0.5rem",
-                fontSize: "1.1rem",
-              }}
-            >
-              <span
-                style={{
-                  display: "inline-block",
-                  maxWidth: "80%",
-                  overflow: "hidden",
-                  whiteSpace: "nowrap",
-                  textOverflow: "ellipsis",
-                }}
-              >
-                <strong style={{ marginRight: "0.75rem", color: "#ccc" }}>
-                  {i + 6}
-                </strong>
-                {news.title}
-              </span>
-              <span
-                style={{
-                  whiteSpace: "nowrap",
-                  color: "#007bff",
-                  fontWeight: "bold",
-                }}
-              >
-                {news.count ?? 0}건
-              </span>
-            </li>
-          ))}
+          {renderList(rightNews, 6)}
         </ol>
       </div>
     </div>

@@ -122,46 +122,6 @@ export default function NewsCard({
                 >
                   {source}
                 </div>
-                <div
-                  onClick={() => onTitleClick?.({ title, source })}
-                  style={{
-                    fontSize: "0.85rem",
-                    color: "#333",
-                    cursor: "pointer",
-                  }}
-                >
-                  {title}
-                </div>
-                <div
-                  style={{
-                    fontSize: "10pt",
-                    color: "#000",
-                    fontWeight: "bold",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {source}
-                </div>
-                <div
-                  onClick={() => onTitleClick?.({ title, source })}
-                  style={{
-                    fontSize: "0.85rem",
-                    color: "#333",
-                    cursor: "pointer",
-                  }}
-                >
-                  {title}
-                </div>
-                <div
-                  style={{
-                    fontSize: "10pt",
-                    color: "#000",
-                    fontWeight: "bold",
-                    marginBottom: "1rem",
-                  }}
-                >
-                  {source}
-                </div>
               </div>
             </li>
           ))}
