@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import PressGroupCard from "./PressGroupCard"; // 언론사 단위 카드 컴포넌트
-import NewsModal from "./NewsModal"; // 모달 import 추가
 
-export default function PressNews() {
+export default function PressNews({ onTitleClick }) {
   const [groupedNews, setGroupedNews] = useState({});
   const [page, setPage] = useState(0);
-  const [selectedTitle, setSelectedTitle] = useState(null); // 선택된 뉴스
-  const [isModalOpen, setIsModalOpen] = useState(false); // 모달 상태
   const groupsPerPage = 3; // 한 페이지에 보여줄 언론사 그룹 수
 
-  const handleTitleClick = (title) => {
-    setSelectedTitle(title);
-    setIsModalOpen(true);
+  const handleTitleClick = (news) => {
+    onTitleClick?.(news); // Home에서 관리
   };
 
   useEffect(() => {
@@ -56,7 +52,7 @@ export default function PressNews() {
           display: "flex",
           flexWrap: "wrap",
           gap: "12px",
-          justifyContent: "center", // ← 가운데 정렬
+          justifyContent: "center",
         }}
       >
         {pagedPressNames.map((pressName) => (
@@ -80,16 +76,6 @@ export default function PressNews() {
           ➡️
         </button>
       </div>
-      {/* 🔹 모달 컴포넌트 추가 */}
-      {selectedTitle && (
-        <NewsModal
-          title={selectedTitle.title}
-          link={selectedTitle.link}
-          press={selectedTitle.press}
-          upload_date={selectedTitle.upload_date}
-          onClose={() => setSelectedTitle(null)}
-        />
-      )}
     </div>
   );
 }

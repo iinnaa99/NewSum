@@ -1,12 +1,23 @@
+import React, { useState } from "react";
 import Header from "../components/Header";
 import TopNewsBar from "../components/TopNewsBar";
 import TopicNews from "../components/TopicNews";
 import PressNews from "../components/PressNews";
-import React, { useState } from "react";
 import NewsModal from "../components/NewsModal";
 
 export default function Home() {
   const [selectedNews, setSelectedNews] = useState(null);
+
+  const handleTitleClick = (news) => {
+    if (!news) return;
+    const { title, link, press_name, press, upload_date } = news;
+    setSelectedNews({
+      title,
+      link,
+      press: press_name || press?.press_name || "언론사 미표시",
+      upload_date,
+    });
+  };
 
   return (
     <div style={{ width: "100%", boxSizing: "border-box" }}>
@@ -16,14 +27,14 @@ export default function Home() {
           display: "flex",
           flexWrap: "wrap",
           gap: "2rem",
-          justifyContent: "center", // 카드들이 가운데로 오도록
+          justifyContent: "center",
           maxWidth: "12000px",
           margin: "0 auto",
           padding: "1rem",
         }}
       >
         <Header />
-        <TopNewsBar onTitleClick={setSelectedNews} />
+        <TopNewsBar onTitleClick={handleTitleClick} />
 
         {/* 주제별 + 언론사별 레이아웃 */}
         <div
@@ -39,7 +50,7 @@ export default function Home() {
             className="news-section topic"
             style={{ flex: "1 1 48%", minWidth: "350px" }}
           >
-            <TopicNews key="topic-news" onTitleClick={setSelectedNews} />
+            <TopicNews key="topic-news" onTitleClick={handleTitleClick} />
           </div>
 
           {/* 오른쪽: 언론사별 */}
@@ -47,7 +58,7 @@ export default function Home() {
             className="news-section press"
             style={{ flex: "1 1 48%", minWidth: "350px" }}
           >
-            <PressNews key="press-news" onTitleClick={setSelectedNews} />
+            <PressNews key="press-news" onTitleClick={handleTitleClick} />
           </div>
         </div>
       </div>

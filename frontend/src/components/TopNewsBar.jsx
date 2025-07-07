@@ -21,8 +21,13 @@ export default function TopNewsBar({ onTitleClick }) {
     fetchTopNews();
   }, []);
 
-  const handleClick = (article) => {
-    onTitleClick?.(article); // 모달 열기
+  const handleTitleClick = (news) => {
+    onTitleClick?.({
+      title: news.news_title,
+      link: news.news_link,
+      press: news.press_name ?? "",
+      upload_date: news.upload_date ?? new Date().toISOString(),
+    });
   };
 
   const leftNews = topNews.slice(0, 5);
@@ -31,7 +36,7 @@ export default function TopNewsBar({ onTitleClick }) {
   const renderList = (newsArray, startIndex) =>
     newsArray.map((news, i) => (
       <li
-        key={news.id}
+        key={news.id ?? i}
         style={{
           display: "flex",
           justifyContent: "space-between",
@@ -41,7 +46,7 @@ export default function TopNewsBar({ onTitleClick }) {
           fontSize: "1.1rem",
           cursor: "pointer",
         }}
-        onClick={() => handleClick(news)}
+        onClick={() => handleTitleClick(news)}
       >
         <span
           style={{
@@ -55,7 +60,7 @@ export default function TopNewsBar({ onTitleClick }) {
           <strong style={{ marginRight: "0.75rem", color: "#ccc" }}>
             {startIndex + i}
           </strong>
-          {news.title}
+          {news.news_title}
         </span>
         <span
           style={{
@@ -64,7 +69,7 @@ export default function TopNewsBar({ onTitleClick }) {
             fontWeight: "bold",
           }}
         >
-          {news.count ?? 0}건
+          {news.new_cnt ?? 0}건
         </span>
       </li>
     ));

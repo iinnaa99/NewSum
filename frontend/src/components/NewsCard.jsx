@@ -96,14 +96,21 @@ export default function NewsCard({
         }}
       />
 
-      {/* 언론사별 제목 출력 */}
+      {/* 언론사별 제목 출력
       <div style={{ padding: "0.2rem" }}>
         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
           {sources?.slice(0, 3).map((source, i) => (
             <li key={i} style={{ marginBottom: "0.75rem" }}>
               <div style={{ margin: "1rem" }}>
                 <div
-                  onClick={() => onTitleClick?.({ title, source })}
+                  onClick={() =>
+                    onTitleClick?.({
+                      title,
+                      link,
+                      press: sources?.[0] ?? "",
+                      upload_date: new Date().toISOString(), // 없으면 임시로라도 전달
+                    })
+                  }
                   style={{
                     fontSize: "0.85rem",
                     color: "#333",
@@ -126,6 +133,40 @@ export default function NewsCard({
             </li>
           ))}
         </ul>
+      </div> */}
+
+      {/* 뉴스 리스트 */}
+      <div style={{ padding: "0 1rem", marginTop: "0.5rem" }}>
+        {sources.slice(0, 3).map((news, i) => (
+          <div key={i} style={{ marginBottom: "0.75rem" }}>
+            <div
+              onClick={() =>
+                onTitleClick?.({
+                  title: news.news_title,
+                  link: news.news_link,
+                  press: news.press_name,
+                  upload_date: news.upload_date,
+                })
+              }
+              style={{
+                fontSize: "0.85rem",
+                color: "#333",
+                cursor: "pointer",
+              }}
+            >
+              {news.news_title}
+            </div>
+            <div
+              style={{
+                fontSize: "10pt",
+                color: "#000",
+                fontWeight: "bold",
+              }}
+            >
+              {news.press_name}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* 버튼 2개 */}

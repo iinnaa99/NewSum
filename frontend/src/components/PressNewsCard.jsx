@@ -62,7 +62,14 @@ export default function PressNewsCard({
             <li key={index} style={{ margin: "1rem" }}>
               <div
                 key={index}
-                onClick={() => onTitleClick(item)}
+                onClick={() =>
+                  onTitleClick?.({
+                    title: item.title,
+                    link: item.link,
+                    press: item.press ?? "",
+                    upload_date: item.upload_date ?? new Date().toISOString(),
+                  })
+                }
                 style={{
                   flex: 1,
                   whiteSpace: "nowrap",
