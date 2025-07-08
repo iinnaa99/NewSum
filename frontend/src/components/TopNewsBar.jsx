@@ -122,11 +122,10 @@ export default function TopNewsBar({ onTitleClick }) {
           });
           const time = now.toLocaleTimeString("ko-KR", {
             hour: "2-digit",
-            minute: "2-digit",
             hour12: false,
           });
 
-          return `${date} (${weekday}) ${time}`;
+          return `${date} (${weekday}) ${time} 정보`;
         })()}
       </div>
 
