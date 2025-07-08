@@ -8,7 +8,15 @@ export default function PressNews({ onTitleClick }) {
   const groupsPerPage = 3; // 한 페이지에 보여줄 언론사 그룹 수
 
   const handleTitleClick = (news) => {
-    onTitleClick?.(news); // Home에서 관리
+    onTitleClick?.({
+      title: news.news_title || "제목 없음",
+      press: news.press_name ?? "언론사 미표시",
+      upload_date: news.upload_date,
+      link: news.news_link,
+      summary: news.cont_sum ?? "요약 없음",
+      relatedNews: [],
+      relatedWords: [],
+    });
   };
 
   useEffect(() => {

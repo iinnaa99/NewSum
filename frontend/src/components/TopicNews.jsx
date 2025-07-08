@@ -57,7 +57,30 @@ export default function CategoryCards({ onTitleClick }) {
   };
 
   const handleTitleClick = (news) => {
-    onTitleClick?.(news);
+    const relatedNews = allNews.filter(
+      (n) => n.topic_id === news.topic_id && n.news_title !== news.news_title
+    );
+
+    const keywords = news.keyword
+      ? news.keyword.split(",").map((k) => k.trim())
+      : [];
+
+    const selectedNews = {
+      title: news.topic_title || "제목 없음",
+      press: news.press_name ?? "언론사 미표시",
+      upload_date: news.upload_date,
+      link: news.news_link,
+      summary: news.topic_content ?? "요약 없음",
+      relatedWords: keywords,
+      relatedNews: relatedNews.map((n) => ({
+        title: n.news_title,
+        link: n.news_link,
+        press: n.press_name,
+        upload_date: n.upload_date,
+      })),
+    };
+
+    onTitleClick?.(selectedNews);
   };
 
   return (
@@ -89,18 +112,30 @@ export default function CategoryCards({ onTitleClick }) {
           justifyContent: "center",
         }}
       >
-        {pagedCards.map((card, index) => (
-          <NewsCard
-            key={index}
-            title={card.news_title}
-            link={card.news_link}
-            image={card.photo_link}
-            category={card.category_name}
-            count={filteredCards.length}
-            sources={[card.press_name ?? "언론사 미표시"]}
-            onTitleClick={handleTitleClick}
-          />
-        ))}
+        {pagedCards.map((card, index) => {
+          const sameTopicNews = filteredCards
+            .filter((c) => c.topic_title === card.topic_title)
+            .slice(0, 3)
+            .map((c) => ({
+              news_title: c.news_title,
+              news_link: c.news_link,
+              press_name: c.press_name,
+              upload_date: c.upload_date,
+            }));
+
+          return (
+            <NewsCard
+              key={index}
+              title={card.topic_title}
+              link={card.news_link}
+              image={card.photo_link}
+              category={card.category_name}
+              count={sameTopicNews.length}
+              sources={sameTopicNews}
+              onTitleClick={() => handleTitleClick(card)} // card 전체 넘기기
+            />
+          );
+        })}
       </div>
 
       <div style={{ textAlign: "center", marginTop: "12px" }}>

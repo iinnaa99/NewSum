@@ -8,36 +8,26 @@ const router = express.Router();
 router.get("/top10", async (req, res) => {
   try {
     const [rows] = await db.query(`
-    SELECT 
+      SELECT
         t.topic_id,
         t.topic_title,
-        t.new_cnt,
         t.topic_content,
         t.keyword,
+        t.new_cnt,
         n.title AS news_title,
         n.link AS news_link,
         p.press_name,
-        n.upload_date
-    FROM (
+        n.upload_date,
+        n.photo_link
+      FROM (
         SELECT *
         FROM topics
         ORDER BY new_cnt DESC
         LIMIT 10
-    ) AS t
-    LEFT JOIN (
-        SELECT *
-        FROM (
-            SELECT *,
-                  ROW_NUMBER() OVER (PARTITION BY topic_id ORDER BY upload_date DESC) AS rn
-            FROM news
-            WHERE topic_id IS NOT NULL
-        ) AS ranked
-        WHERE rn <= 2
-    ) AS n ON t.topic_id = n.topic_id
-    LEFT JOIN press p ON n.press_id = p.press_id
-    ORDER BY t.new_cnt DESC, n.upload_date DESC;
-
-
+      ) t
+      JOIN news n ON t.topic_id = n.topic_id
+      JOIN press p ON n.press_id = p.press_id
+      ORDER BY t.new_cnt DESC, n.upload_date DESC;
     `);
     res.json(rows);
   } catch (error) {
@@ -50,20 +40,23 @@ router.get("/top10", async (req, res) => {
 router.get("/topic", async (req, res) => {
   try {
     const [rows] = await db.query(`
-    SELECT 
-        t.topic_title,
-        t.new_cnt,
-        n.title AS news_title,
-        n.link AS news_link,
-        p.press_name,
-        n.upload_date,
-        n.photo_link,
-        c.category_name
-    FROM topics t
-    JOIN news n ON t.topic_id = n.topic_id
-    JOIN press p ON n.press_id = p.press_id
-    JOIN category c ON n.category_id = c.category_id
-    ORDER BY t.new_cnt DESC, n.upload_date DESC;
+      SELECT 
+          t.topic_id,
+          t.topic_title,
+          t.topic_content,
+          t.keyword,
+          t.new_cnt,
+          n.title AS news_title,
+          n.link AS news_link,
+          p.press_name,
+          n.upload_date,
+          n.photo_link,
+          c.category_name
+      FROM topics t
+      JOIN news n ON t.topic_id = n.topic_id
+      JOIN press p ON n.press_id = p.press_id
+      JOIN category c ON n.category_id = c.category_id
+      ORDER BY t.new_cnt DESC, n.upload_date DESC;
     `);
     res.json(rows);
   } catch (error) {

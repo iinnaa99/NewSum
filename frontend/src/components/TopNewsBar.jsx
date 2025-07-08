@@ -22,11 +22,29 @@ export default function TopNewsBar({ onTitleClick }) {
   }, []);
 
   const handleTitleClick = (news) => {
+    const keywords = news.keyword
+      ? news.keyword.split(",").map((k) => k.trim())
+      : [];
+
+    const relatedNews = topNews
+      .filter(
+        (n) => n.topic_id === news.topic_id && n.news_link !== news.news_link // 혹은 n.id !== news.id 가 더 확실
+      )
+      .map((n) => ({
+        title: n.news_title,
+        link: n.news_link,
+        press: n.press_name,
+        upload_date: n.upload_date,
+      }));
+
     onTitleClick?.({
-      title: news.news_title,
-      link: news.news_link,
-      press: news.press_name ?? "",
+      title: news.topic_title || news.news_title || "제목 없음",
+      press: news.press_name ?? "언론사 미표시",
       upload_date: news.upload_date ?? new Date().toISOString(),
+      link: news.news_link,
+      summary: news.topic_content ?? "요약 없음",
+      relatedWords: keywords,
+      relatedNews,
     });
   };
 

@@ -10,12 +10,25 @@ export default function Home() {
 
   const handleTitleClick = (news) => {
     if (!news) return;
-    const { title, link, press_name, press, upload_date } = news;
+    const {
+      title,
+      link,
+      press_name,
+      press,
+      upload_date,
+      summary,
+      relatedWords,
+      relatedNews,
+    } = news;
+
     setSelectedNews({
       title,
       link,
       press: press_name || press?.press_name || "언론사 미표시",
       upload_date,
+      summary: summary ?? "AI 요약 내용이 여기에 들어갑니다.",
+      relatedWords: relatedWords ?? [],
+      relatedNews: relatedNews ?? [],
     });
   };
 
@@ -70,6 +83,9 @@ export default function Home() {
           link={selectedNews.link}
           press={selectedNews.press}
           upload_date={selectedNews.upload_date}
+          summary={selectedNews.summary}
+          relatedWords={selectedNews.relatedWords}
+          relatedNews={selectedNews.relatedNews}
           onClose={() => setSelectedNews(null)}
         />
       )}
