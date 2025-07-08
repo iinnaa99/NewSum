@@ -20,7 +20,7 @@ export default function CategoryCards() {
   const [categoryPage, setCategoryPage] = useState(0);
   const [summaryModalData, setSummaryModalData] = useState(null);
   const [newsModalData, setNewsModalData] = useState(null);
-  const cardsPerPage = 3;
+  const [cardsPerPage, setCardsPerPage] = useState(3);
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -33,6 +33,20 @@ export default function CategoryCards() {
       }
     };
     fetchNews();
+  }, []);
+
+  // ✅ 화면 크기에 따라 cardsPerPage 조절
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setCardsPerPage(2);
+      } else {
+        setCardsPerPage(3);
+      }
+    };
+    handleResize(); // 초기 호출
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const filteredCards =
@@ -57,7 +71,6 @@ export default function CategoryCards() {
     }
   };
 
-  // 🧠 SummaryModal 오픈
   const handleOpenSummaryModal = (news) => {
     const relatedNews = allNews.filter(
       (n) => n.topic_id === news.topic_id && n.news_title !== news.news_title
@@ -82,15 +95,22 @@ export default function CategoryCards() {
     });
   };
 
-  // 📰 NewsModal 오픈
   const handleOpenNewsModal = (newsItem) => {
-    setNewsModalData(newsItem); // 제목 클릭 시 newsItem은 { title, link, press, upload_date }
+    setNewsModalData(newsItem);
   };
 
   return (
     <div>
       <h2>주제별</h2>
-      <div style={{ marginBottom: "1.4rem" }}>
+      <div
+        style={{
+          marginBottom: "1.4rem",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "0.5rem",
+          padding: "0 1rem",
+        }}
+      >
         {categories.map((cat) => (
           <button
             key={cat}
@@ -99,8 +119,16 @@ export default function CategoryCards() {
               setCategoryPage(0);
             }}
             style={{
-              margin: "0 6px",
+              padding: "0.5rem 1rem",
+              border: "1px solid #ddd",
+              borderRadius: "10px",
+              backgroundColor: selectedCategory === cat ? "#f0f0f0" : "white",
               fontWeight: selectedCategory === cat ? "bold" : "normal",
+              fontSize: "0.95rem",
+              cursor: "pointer",
+              maxWidth: "100%",
+              whiteSpace: "normal",
+              wordBreak: "keep-all",
             }}
           >
             {cat}
@@ -112,7 +140,7 @@ export default function CategoryCards() {
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "12px",
+          gap: "10px",
           justifyContent: "center",
         }}
       >
@@ -138,6 +166,13 @@ export default function CategoryCards() {
               sources={sameTopicNews}
               onTitleClick={() => handleOpenSummaryModal(card)}
               onNewsClick={(newsItem) => handleOpenNewsModal(newsItem)}
+              style={{
+                width: "100%",
+                maxWidth: "360px",
+                flex: `1 1 calc(${
+                  cardsPerPage === 3 ? "33.333%" : "50%"
+                } - 12px)`,
+              }}
             />
           );
         })}
@@ -163,15 +198,11 @@ export default function CategoryCards() {
         </button>
       </div>
 
-      {/* 모달들 렌더링 */}
       {summaryModalData && (
         <SummaryModal
           {...summaryModalData}
           onClose={() => setSummaryModalData(null)}
         />
-      )}
-      {newsModalData && (
-        <NewsModal {...newsModalData} onClose={() => setNewsModalData(null)} />
       )}
     </div>
   );

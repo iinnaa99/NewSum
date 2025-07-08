@@ -3,7 +3,7 @@ import PressNewsCard from "./PressNewsCard";
 
 export default function PressGroupCard({ pressName, articles, onTitleClick }) {
   return (
-    <div style={{ width: "100%", maxWidth: "360px", flex: "1 1 30%" }}>
+    <div style={{ width: "100%", maxWidth: "280px", flex: "1 1 30%" }}>
       <PressNewsCard
         key={pressName}
         press={pressName}

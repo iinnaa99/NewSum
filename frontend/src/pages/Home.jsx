@@ -43,7 +43,7 @@ export default function Home() {
           justifyContent: "center",
           maxWidth: "12000px",
           margin: "0 auto",
-          padding: "1rem",
+          paddingBottom: "1rem",
         }}
       >
         <Header />
@@ -56,12 +56,13 @@ export default function Home() {
             flexWrap: "wrap",
             justifyContent: "space-between",
             gap: "2rem",
+            width: "95%",
           }}
         >
           {/* 왼쪽: 주제별 */}
           <div
             className="news-section topic"
-            style={{ flex: "1 1 48%", minWidth: "350px" }}
+            style={{ flex: "1 1 48%", minWidth: "370px" }}
           >
             <TopicNews key="topic-news" onTitleClick={handleTitleClick} />
           </div>
@@ -69,7 +70,7 @@ export default function Home() {
           {/* 오른쪽: 언론사별 */}
           <div
             className="news-section press"
-            style={{ flex: "1 1 48%", minWidth: "350px" }}
+            style={{ flex: "1 1 48%", minWidth: "370px" }}
           >
             <PressNews key="press-news" onTitleClick={handleTitleClick} />
           </div>

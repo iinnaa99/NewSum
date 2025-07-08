@@ -70,3 +70,28 @@ body {
     flex-direction: column;
   }
 }
+
+@media (max-width: 768px) {
+  .card {
+    width: 100% !important;
+    margin-bottom: 1rem;
+  }
+
+  .modal {
+    width: 90% !important;
+    padding: 1rem !important;
+  }
+
+  .header-title {
+    font-size: 1.2rem;
+  }
+
+  .summary-flex {
+    flex-direction: column;
+  }
+
+  .related-news-box {
+    max-height: 300px;
+    overflow-y: scroll;
+  }
+}

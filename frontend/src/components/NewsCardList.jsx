@@ -28,7 +28,15 @@ export default function NewsCardList() {
   }, []);
 
   return (
-    <div>
+    <div
+      style={{
+        display: "flex",
+        flexWrap: "wrap",
+        justifyContent: "center",
+        gap: "16px",
+        padding: "1rem",
+      }}
+    >
       {cards.map((card, idx) => (
         <NewsCard
           key={card.id}

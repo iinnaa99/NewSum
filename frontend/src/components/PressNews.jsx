@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import PressGroupCard from "./PressGroupCard"; // 언론사 단위 카드 컴포넌트
+import PressGroupCard from "./PressGroupCard";
 
 export default function PressNews({ onTitleClick }) {
   const [groupedNews, setGroupedNews] = useState({});
   const [page, setPage] = useState(0);
-  const groupsPerPage = 3; // 한 페이지에 보여줄 언론사 그룹 수
+  const [groupsPerPage, setGroupsPerPage] = useState(3); // 반응형 처리
+
+  // 🔁 반응형으로 모바일 대응
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) {
+        setGroupsPerPage(2);
+      } else {
+        setGroupsPerPage(3);
+      }
+    };
+    handleResize(); // 초기 실행
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleTitleClick = (news) => {
     onTitleClick?.({
@@ -59,7 +73,7 @@ export default function PressNews({ onTitleClick }) {
         style={{
           display: "flex",
           flexWrap: "wrap",
-          gap: "12px",
+          gap: "10px",
           justifyContent: "center",
         }}
       >

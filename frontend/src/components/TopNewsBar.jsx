@@ -3,6 +3,14 @@ import React, { useEffect, useState, useRef } from "react";
 export default function TopNewsBar({ onTitleClick }) {
   const [topNews, setTopNews] = useState([]);
   const fetchedRef = useRef(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     if (fetchedRef.current) return;
@@ -28,7 +36,7 @@ export default function TopNewsBar({ onTitleClick }) {
 
     const relatedNews = topNews
       .filter(
-        (n) => n.topic_id === news.topic_id && n.news_link !== news.news_link // 혹은 n.id !== news.id 가 더 확실
+        (n) => n.topic_id === news.topic_id && n.news_link !== news.news_link
       )
       .map((n) => ({
         title: n.news_title,
@@ -47,9 +55,6 @@ export default function TopNewsBar({ onTitleClick }) {
       relatedNews,
     });
   };
-
-  const leftNews = topNews.slice(0, 5);
-  const rightNews = topNews.slice(5, 10);
 
   const renderList = (newsArray, startIndex) =>
     newsArray.map((news, i) => (
@@ -99,10 +104,10 @@ export default function TopNewsBar({ onTitleClick }) {
         style={{
           display: "flex",
           justifyContent: "flex-end",
-          margin: "0 1rem",
+          margin: isMobile ? "0 1rem" : "0 3rem",
           color: "#444",
           fontWeight: "bold",
-          fontSize: "15pt",
+          fontSize: isMobile ? "13pt" : "15pt",
         }}
       >
         {(() => {
@@ -117,6 +122,7 @@ export default function TopNewsBar({ onTitleClick }) {
           });
           const time = now.toLocaleTimeString("ko-KR", {
             hour: "2-digit",
+            minute: "2-digit",
             hour12: false,
           });
 
@@ -128,20 +134,36 @@ export default function TopNewsBar({ onTitleClick }) {
       <div
         style={{
           display: "flex",
+          flexWrap: "wrap",
           justifyContent: "center",
-          gap: "2rem",
           background: "#0a0a1a",
           color: "#fff",
           padding: "1.5rem",
           borderRadius: "1rem",
+          gap: "2rem",
+          margin: isMobile ? "1rem" : "0 auto",
         }}
       >
-        <ol style={{ listStyle: "none", padding: 0, margin: 0, width: "48%" }}>
-          {renderList(leftNews, 1)}
-        </ol>
-        <ol style={{ listStyle: "none", padding: 0, margin: 0, width: "48%" }}>
-          {renderList(rightNews, 6)}
-        </ol>
+        {isMobile ? (
+          <ol
+            style={{ width: "100%", padding: 0, margin: 0, listStyle: "none" }}
+          >
+            {renderList(topNews.slice(0, 10), 1)}
+          </ol>
+        ) : (
+          <>
+            <ol
+              style={{ width: "48%", padding: 0, margin: 0, listStyle: "none" }}
+            >
+              {renderList(topNews.slice(0, 5), 1)}
+            </ol>
+            <ol
+              style={{ width: "48%", padding: 0, margin: 0, listStyle: "none" }}
+            >
+              {renderList(topNews.slice(5, 10), 6)}
+            </ol>
+          </>
+        )}
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export default function NewsCard({
         borderRadius: "12px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
         minWidth: "280px",
-        maxWidth: "280px",
+        maxWidth: "100%",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
