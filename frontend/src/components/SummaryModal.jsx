@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-export default function NewsModal({
+export default function SummaryModal({
   title,
   press,
   upload_date,
@@ -42,12 +42,12 @@ export default function NewsModal({
           left: "50%",
           transform: "translateX(-50%)",
           backgroundColor: "white",
-          padding: "30px",
+          padding: "50px",
           border: "1px solid #ccc",
           borderRadius: "15px",
           zIndex: 1000,
-          width: "750px",
-          maxHeight: "90vh",
+          width: "70%",
+          height: "80%",
           overflowY: "auto",
           boxShadow: "0 5px 20px rgba(0,0,0,0.3)",
         }}
@@ -86,34 +86,89 @@ export default function NewsModal({
         </h2>
 
         {/* ② AI 요약 + ③ 연관어 */}
-        <div style={{ display: "flex", gap: "30px", marginBottom: "30px" }}>
+        <div
+          style={{
+            display: "flex",
+            gap: "30px",
+            marginBottom: "30px",
+            height: "300px",
+          }}
+        >
           {/* 요약 */}
-          <div style={{ flex: 2, minWidth: "45%", minHeight: "45%" }}>
-            <h4>🧠 AI 요약</h4>
-            <p style={{ lineHeight: "1.6", whiteSpace: "pre-wrap" }}>
+          <div
+            style={{
+              flex: 1,
+              minWidth: "45%",
+              minHeight: "45%",
+              overflowY: "auto",
+              paddingRight: "2rem",
+            }}
+          >
+            <h2 style={{ marginBottom: "10px", fontWeight: "bold" }}>
+              🧠 AI 요약
+            </h2>
+            <p
+              style={{
+                lineHeight: "1.6",
+                whiteSpace: "pre-wrap",
+              }}
+            >
               {summary}
             </p>
           </div>
 
           {/* 연관어 */}
-          <div style={{ flex: 1, minWidth: "45%", minHeight: "45%" }}>
-            <h4>🔗 연관어</h4>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+          <div
+            style={{
+              flex: 1,
+              minWidth: "45%",
+              minHeight: "45%",
+              overflowY: "auto",
+            }}
+          >
+            <h2 style={{ marginBottom: "10px", fontWeight: "bold" }}>
+              🔗 연관어
+            </h2>
+            <div
+              style={{
+                position: "relative",
+                width: "98%",
+                height: "70%",
+                overflow: "hidden",
+              }}
+            >
               {relatedWords.length > 0 ? (
-                relatedWords.map((word, idx) => (
-                  <span
-                    key={idx}
-                    style={{
-                      background: "#eef",
-                      borderRadius: "15px",
-                      padding: "6px 10px",
-                      fontSize: "0.85rem",
-                      color: "#333",
-                    }}
-                  >
-                    {word}
-                  </span>
-                ))
+                relatedWords.map((word, idx) => {
+                  const colors = [
+                    "#FF5733",
+                    "#33B5FF",
+                    "#FF33A8",
+                    "#00C853",
+                    "#FF9800",
+                    "#9C27B0",
+                    "#3F51B5",
+                  ];
+                  const randomColor = colors[idx % colors.length];
+
+                  return (
+                    <span
+                      key={idx}
+                      style={{
+                        position: "absolute",
+                        top: `${Math.random() * 80 + 5}%`,
+                        left: `${Math.random() * 80 + 5}%`,
+                        transform: "translate(-50%, -50%)",
+                        color: randomColor,
+                        fontWeight: "bold",
+                        fontSize: "0.85rem",
+                        whiteSpace: "nowrap",
+                        pointerEvents: "none",
+                      }}
+                    >
+                      {word}
+                    </span>
+                  );
+                })
               ) : (
                 <p style={{ color: "#888" }}>연관어 없음</p>
               )}
@@ -123,9 +178,9 @@ export default function NewsModal({
 
         {/* ④ 관련 뉴스 */}
         <div>
-          <h4 style={{ marginBottom: "10px", fontWeight: "bold" }}>
+          <h2 style={{ marginBottom: "10px", fontWeight: "bold" }}>
             📰 관련 뉴스
-          </h4>
+          </h2>
           {relatedNews.length > 0 ? (
             <div
               style={{

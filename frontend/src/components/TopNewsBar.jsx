@@ -99,18 +99,29 @@ export default function TopNewsBar({ onTitleClick }) {
         style={{
           display: "flex",
           justifyContent: "flex-end",
-          margin: "1rem",
+          margin: "0 1rem",
           color: "#444",
           fontWeight: "bold",
           fontSize: "15pt",
         }}
       >
-        {new Date().toLocaleDateString("ko-KR", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          weekday: "short",
-        })}
+        {(() => {
+          const now = new Date();
+          const date = now.toLocaleDateString("ko-KR", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          });
+          const weekday = now.toLocaleDateString("ko-KR", {
+            weekday: "short",
+          });
+          const time = now.toLocaleTimeString("ko-KR", {
+            hour: "2-digit",
+            hour12: false,
+          });
+
+          return `${date} (${weekday}) ${time}`;
+        })()}
       </div>
 
       {/* 뉴스 목록 */}

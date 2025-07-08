@@ -19,7 +19,7 @@ export default function Header() {
           src={logo}
           alt="NewSum 로고"
           style={{
-            height: "200px",
+            height: "250px",
             verticalAlign: "middle",
           }}
         />

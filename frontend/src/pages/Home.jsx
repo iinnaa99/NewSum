@@ -3,7 +3,7 @@ import Header from "../components/Header";
 import TopNewsBar from "../components/TopNewsBar";
 import TopicNews from "../components/TopicNews";
 import PressNews from "../components/PressNews";
-import NewsModal from "../components/NewsModal";
+import SummaryModal from "../components/SummaryModal";
 
 export default function Home() {
   const [selectedNews, setSelectedNews] = useState(null);
@@ -78,7 +78,7 @@ export default function Home() {
 
       {/* 팝업창 */}
       {selectedNews && (
-        <NewsModal
+        <SummaryModal
           title={selectedNews.title}
           link={selectedNews.link}
           press={selectedNews.press}

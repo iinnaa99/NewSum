@@ -60,27 +60,23 @@ export default function PressNewsCard({
         <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
           {titles?.slice(0, 3).map((item, index) => (
             <li key={index} style={{ margin: "1rem" }}>
-              <div
-                key={index}
-                onClick={() =>
-                  onTitleClick?.({
-                    title: item.title,
-                    link: item.link,
-                    press: item.press ?? "",
-                    upload_date: item.upload_date ?? new Date().toISOString(),
-                  })
-                }
+              <a
+                href={item.link}
+                target="_blank"
+                rel="noopener noreferrer"
                 style={{
+                  display: "block",
                   flex: 1,
                   whiteSpace: "nowrap",
                   overflow: "hidden",
                   textOverflow: "ellipsis",
-                  cursor: "pointer",
+                  color: "#000",
+                  textDecoration: "none",
                 }}
                 title={item.title}
               >
                 {item.title}
-              </div>
+              </a>
               <div
                 style={{
                   fontSize: "0.85rem",
@@ -95,6 +91,7 @@ export default function PressNewsCard({
           ))}
         </ul>
       </div>
+
       {/* 버튼 */}
       <div
         style={{
