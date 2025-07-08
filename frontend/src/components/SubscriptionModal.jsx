@@ -96,15 +96,46 @@ export default function SubscriptionModal({ onClose }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const { name, email, newsCategory } = formData;
-    if (!name || !email || newsCategory.length === 0) {
-      alert("이름, 이메일, 기사 카테고리를 입력해주세요.");
-      return;
+
+    const { name, email, emailDomain, newsCategory, topicCategory } = formData;
+
+    if (!name.trim()) return alert("이름을 입력해주세요.");
+    if (!email.trim() || !emailDomain.trim())
+      return alert("이메일을 입력해주세요.");
+    if (newsCategory.length === 0)
+      return alert("뉴스 카테고리를 선택해주세요.");
+
+    const fullEmail = `${email}@${emailDomain}`;
+
+    try {
+      const res = await fetch("http://localhost:3001/api/subscribe", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email: fullEmail,
+          gender: formData.gender,
+          age: formData.age,
+          newsCategory,
+          topicCategory,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("신청이 완료되었습니다.");
+        onClose();
+      } else {
+        alert("에러 발생: " + data.message);
+      }
+    } catch (err) {
+      alert("서버 통신 오류");
+      console.error(err);
     }
-    alert("구독 신청 완료!");
-    onClose?.();
   };
 
   return (
