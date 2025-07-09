@@ -15,18 +15,17 @@ router.get("/top10", async (req, res) => {
         t.keyword,
         t.new_cnt,
         n.title AS news_title,
-        n.link AS news_link,
-        p.press_name,
+        n.url AS news_link,
+        n.company AS press_name,
         n.upload_date,
-        n.photo_link
+        n.thumbnail AS photo_link
       FROM (
         SELECT *
-        FROM topics
+        FROM news_sum
         ORDER BY new_cnt DESC
         LIMIT 10
       ) t
-      JOIN news n ON t.topic_id = n.topic_id
-      JOIN press p ON n.press_id = p.press_id
+      JOIN news_raw n ON t.topic_id = n.cluster2nd
       ORDER BY t.new_cnt DESC, n.upload_date DESC;
     `);
     res.json(rows);
@@ -47,15 +46,14 @@ router.get("/topic", async (req, res) => {
           t.keyword,
           t.new_cnt,
           n.title AS news_title,
-          n.link AS news_link,
-          p.press_name,
+          n.url AS news_link,
+          n.company AS press_name,
           n.upload_date,
-          n.photo_link,
-          c.category_name
-      FROM topics t
-      JOIN news n ON t.topic_id = n.topic_id
-      JOIN press p ON n.press_id = p.press_id
-      JOIN category c ON n.category_id = c.category_id
+          n.thumbnail AS photo_link,
+          c.subject_name AS category_name
+      FROM news_sum t
+      JOIN news_raw n ON t.topic_id = n.cluster2nd
+      JOIN subject c ON n.subject = c.subject_id
       ORDER BY t.new_cnt DESC, n.upload_date DESC;
     `);
     res.json(rows);
@@ -69,16 +67,19 @@ router.get("/topic", async (req, res) => {
 router.get("/press", async (req, res) => {
   try {
     const [rows] = await db.query(`
-    SELECT 
-        p.press_name,
-        n.title,
-        n.link,
-        n.upload_date,
-        n.photo_link,
-        p.press_id
-    FROM news n
-    JOIN press p ON n.press_id = p.press_id
-    ORDER BY p.press_id, n.upload_date DESC;
+      SELECT
+        company AS press_name,
+        title,
+        url AS link,
+        upload_date,
+        thumbnail AS photo_link
+      FROM (
+        SELECT *,
+              COUNT(*) OVER (PARTITION BY company) AS total_count
+        FROM news_raw
+      ) AS sub
+      WHERE total_count >= 3
+      ORDER BY total_count DESC, company, upload_date DESC;
     `);
     res.json(rows);
   } catch (error) {

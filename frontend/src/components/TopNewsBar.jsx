@@ -5,6 +5,12 @@ export default function TopNewsBar({ onTitleClick }) {
   const fetchedRef = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  function decodeHtmlEntities(str) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+  }
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -83,7 +89,7 @@ export default function TopNewsBar({ onTitleClick }) {
           <strong style={{ marginRight: "0.75rem", color: "#ccc" }}>
             {startIndex + i}
           </strong>
-          {news.news_title}
+          {decodeHtmlEntities(news.news_title)}
         </span>
         <span
           style={{

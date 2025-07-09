@@ -7,6 +7,11 @@ export default function PressNewsCard({
   titles = [],
   onTitleClick,
 }) {
+  function decodeHtmlEntities(str) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+  }
   return (
     <div
       style={{
@@ -75,7 +80,7 @@ export default function PressNewsCard({
                 }}
                 title={item.title}
               >
-                {item.title}
+                {decodeHtmlEntities(item.title)}
               </a>
               <div
                 style={{

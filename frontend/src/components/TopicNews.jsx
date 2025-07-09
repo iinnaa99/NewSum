@@ -7,10 +7,8 @@ export const categories = [
   "정치",
   "경제",
   "사회",
-  "문화",
-  "국제",
-  "지역",
-  "스포츠",
+  "생활/문화",
+  "세계",
   "IT/과학",
 ];
 
@@ -27,7 +25,33 @@ export default function CategoryCards() {
       try {
         const response = await fetch("http://localhost:3001/api/news/topic");
         const data = await response.json();
-        setAllNews(data);
+
+        // ✅ 여기부터 그룹핑 로직 삽입
+        const grouped = {};
+        for (const news of data) {
+          const topicId = news.topic_id;
+          if (!grouped[topicId]) {
+            grouped[topicId] = {
+              topic_id: news.topic_id,
+              topic_title: news.topic_title,
+              topic_content: news.topic_content,
+              keyword: news.keyword,
+              upload_date: news.upload_date,
+              photo_link: news.photo_link,
+              category_name: news.category_name,
+              newsList: [],
+            };
+          }
+          grouped[topicId].newsList.push({
+            news_title: news.news_title,
+            news_link: news.news_link,
+            press_name: news.press_name,
+            upload_date: news.upload_date,
+            category_name: news.category_name,
+          });
+        }
+        const groupedNews = Object.values(grouped);
+        setAllNews(groupedNews); // ✅ topic 단위로 묶인 데이터로 교체
       } catch (error) {
         console.error("🔥 뉴스 불러오기 실패:", error);
       }
@@ -72,21 +96,18 @@ export default function CategoryCards() {
   };
 
   const handleOpenSummaryModal = (news) => {
-    const relatedNews = allNews.filter(
-      (n) => n.topic_id === news.topic_id && n.news_title !== news.news_title
-    );
     const keywords = news.keyword
       ? news.keyword.split(",").map((k) => k.trim())
       : [];
 
     setSummaryModalData({
       title: news.topic_title || "제목 없음",
-      press: news.press_name ?? "언론사 미표시",
+      press: news.newsList?.[0]?.press_name ?? "언론사 미표시",
       upload_date: news.upload_date,
-      link: news.news_link,
+      link: news.newsList?.[0]?.news_link,
       summary: news.topic_content ?? "요약 없음",
       relatedWords: keywords,
-      relatedNews: relatedNews.map((n) => ({
+      relatedNews: news.newsList.map((n) => ({
         title: n.news_title,
         link: n.news_link,
         press: n.press_name,
@@ -145,15 +166,7 @@ export default function CategoryCards() {
         }}
       >
         {pagedCards.map((card, index) => {
-          const sameTopicNews = filteredCards
-            .filter((c) => c.topic_title === card.topic_title)
-            .slice(0, 3)
-            .map((c) => ({
-              news_title: c.news_title,
-              news_link: c.news_link,
-              press_name: c.press_name,
-              upload_date: c.upload_date,
-            }));
+          const sameTopicNews = card.newsList.slice(0, 3); // ✅ 바뀐 구조 반영
 
           return (
             <NewsCard
@@ -161,8 +174,8 @@ export default function CategoryCards() {
               title={card.topic_title}
               link={card.news_link}
               image={card.photo_link}
-              category={card.category_name}
-              count={sameTopicNews.length}
+              category={card.newsList?.[0]?.category_name}
+              count={card.newsList.length}
               sources={sameTopicNews}
               onTitleClick={() => handleOpenSummaryModal(card)}
               onNewsClick={(newsItem) => handleOpenNewsModal(newsItem)}
@@ -172,6 +185,7 @@ export default function CategoryCards() {
                 flex: `1 1 calc(${
                   cardsPerPage === 3 ? "33.333%" : "50%"
                 } - 12px)`,
+                flexShrink: 0,
               }}
             />
           );

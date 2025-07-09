@@ -11,7 +11,7 @@ export default function PressGroupCard({ pressName, articles, onTitleClick }) {
         count={articles.length}
         titles={articles.map((a) => ({
           title: a.title,
-          press: a.press?.press_name || "기타 언론사",
+          press: a.press_name || "기타 언론사",
           link: a.link,
           upload_date: a.upload_date,
         }))}

@@ -9,6 +9,11 @@ export default function NewsCard({
   link,
   onTitleClick,
 }) {
+  function decodeHtmlEntities(str) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+  }
   return (
     <div
       style={{
@@ -16,8 +21,7 @@ export default function NewsCard({
         border: "1px solid #ddd",
         borderRadius: "12px",
         boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
-        minWidth: "280px",
-        maxWidth: "100%",
+        maxWidth: "280px",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -51,7 +55,7 @@ export default function NewsCard({
         <h4
           onClick={() =>
             onTitleClick?.({
-              title,
+              title: decodeHtmlEntities(title),
               link,
               press: sources?.[0] ?? "",
               upload_date: new Date().toISOString(), // 없으면 임시로라도 전달
@@ -64,9 +68,12 @@ export default function NewsCard({
             lineHeight: "1.4",
             margin: "1rem",
             cursor: "pointer",
+            overflow: "hidden",
+            whiteSpace: "nowrap",
+            textOverflow: "ellipsis",
           }}
         >
-          {title}
+          {decodeHtmlEntities(title)}
         </h4>
 
         {/* 건수 - 오른쪽 정렬 */}
@@ -115,9 +122,12 @@ export default function NewsCard({
                     fontSize: "0.85rem",
                     color: "#333",
                     cursor: "pointer",
+                    overflow: "hidden",
+                    whiteSpace: "nowrap",
+                    textOverflow: "ellipsis",
                   }}
                 >
-                  {news.news_title}
+                  {decodeHtmlEntities(news.news_title)}
                 </div>
                 <div
                   style={{
