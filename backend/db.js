@@ -1,10 +1,13 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import mysql from "mysql2/promise";
 
 const db = await mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root", // 실제 비밀번호로 바꿔주세요
-  database: "news_db",
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
 });
 
 export default db;
