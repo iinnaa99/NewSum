@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "node backend/index.js"
+  },
   "dependencies": {
     "firebase": "^11.10.0"
   }
