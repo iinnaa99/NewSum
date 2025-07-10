@@ -103,6 +103,16 @@ export default function TopNewsBar({ onTitleClick }) {
       </li>
     ));
 
+  // ✅ 중복 topic_id 제거된 뉴스만 추출
+  const uniqueTopics = [];
+  const seenTopics = new Set();
+  topNews.forEach((news) => {
+    if (!seenTopics.has(news.topic_id)) {
+      uniqueTopics.push(news);
+      seenTopics.add(news.topic_id);
+    }
+  });
+
   return (
     <div style={{ width: "100%", margin: "1rem" }}>
       {/* 날짜 */}
@@ -126,12 +136,8 @@ export default function TopNewsBar({ onTitleClick }) {
           const weekday = now.toLocaleDateString("ko-KR", {
             weekday: "short",
           });
-          const time = now.toLocaleTimeString("ko-KR", {
-            hour: "2-digit",
-            hour12: false,
-          });
 
-          return `${date} (${weekday}) ${time} 정보`;
+          return `${date} (${weekday})`;
         })()}
       </div>
 
@@ -153,22 +159,62 @@ export default function TopNewsBar({ onTitleClick }) {
           <ol
             style={{ width: "100%", padding: 0, margin: 0, listStyle: "none" }}
           >
-            {renderList(topNews.slice(0, 10), 1)}
+            {renderList(uniqueTopics.slice(0, 10), 1)}
           </ol>
         ) : (
           <>
             <ol
-              style={{ width: "48%", padding: 0, margin: 0, listStyle: "none" }}
+              style={{
+                width: "48%",
+                padding: 0,
+                margin: 0,
+                listStyle: "none",
+              }}
             >
-              {renderList(topNews.slice(0, 5), 1)}
+              {renderList(uniqueTopics.slice(0, 5), 1)}
             </ol>
             <ol
-              style={{ width: "48%", padding: 0, margin: 0, listStyle: "none" }}
+              style={{
+                width: "48%",
+                padding: 0,
+                margin: 0,
+                listStyle: "none",
+              }}
             >
-              {renderList(topNews.slice(5, 10), 6)}
+              {renderList(uniqueTopics.slice(5, 10), 6)}
             </ol>
           </>
         )}
+      </div>
+
+      {/* 분석 기준 날짜 */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          margin: isMobile ? "0 1rem" : "0 3rem",
+          color: "#999",
+          fontSize: isMobile ? "7pt" : "11pt",
+        }}
+      >
+        {(() => {
+          const now = new Date();
+          const end = new Date(now);
+          end.setHours(16, 0, 0, 0);
+          const start = new Date(end);
+          start.setDate(start.getDate() - 1);
+
+          const formatDate = (date) => {
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const weekday = date.toLocaleDateString("ko-KR", {
+              weekday: "short",
+            });
+            return `${month}월 ${day}일 (${weekday}) 16:00`;
+          };
+
+          return `분석 기준 : ${formatDate(start)} ~ ${formatDate(end)}`;
+        })()}
       </div>
     </div>
   );

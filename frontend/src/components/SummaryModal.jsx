@@ -10,6 +10,11 @@ export default function SummaryModal({
   relatedWords = [],
   onClose,
 }) {
+  function decodeHtmlEntities(str) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = str;
+    return txt.value;
+  }
   // 모달 열릴 때 스크롤 비활성화
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -138,7 +143,34 @@ export default function SummaryModal({
               }}
             >
               {relatedWords.length > 0 ? (
-                relatedWords.map((word, idx) => {
+                (() => {
+                  const usedPositions = [];
+
+                  const isOverlapping = (x, y) => {
+                    const threshold = 40; // 최소 거리(px)
+                    return usedPositions.some(
+                      (pos) => Math.hypot(pos.x - x, pos.y - y) < threshold
+                    );
+                  };
+
+                  const getSafePosition = () => {
+                    let attempts = 0;
+                    while (attempts < 100) {
+                      const x = Math.random() * 90 + 5;
+                      const y = Math.random() * 90 + 5;
+                      if (!isOverlapping(x, y)) {
+                        usedPositions.push({ x, y });
+                        return { x, y };
+                      }
+                      attempts++;
+                    }
+                    // 실패하면 마지막 위치
+                    return {
+                      x: Math.random() * 90 + 5,
+                      y: Math.random() * 90 + 5,
+                    };
+                  };
+
                   const colors = [
                     "#FF5733",
                     "#33B5FF",
@@ -148,27 +180,31 @@ export default function SummaryModal({
                     "#9C27B0",
                     "#3F51B5",
                   ];
-                  const randomColor = colors[idx % colors.length];
 
-                  return (
-                    <span
-                      key={idx}
-                      style={{
-                        position: "absolute",
-                        top: `${Math.random() * 80 + 5}%`,
-                        left: `${Math.random() * 80 + 5}%`,
-                        transform: "translate(-50%, -50%)",
-                        color: randomColor,
-                        fontWeight: "bold",
-                        fontSize: "0.85rem",
-                        whiteSpace: "nowrap",
-                        pointerEvents: "none",
-                      }}
-                    >
-                      {word}
-                    </span>
-                  );
-                })
+                  return relatedWords.map((word, idx) => {
+                    const color = colors[idx % colors.length];
+                    const { x, y } = getSafePosition();
+
+                    return (
+                      <span
+                        key={idx}
+                        style={{
+                          position: "absolute",
+                          top: `${y}%`,
+                          left: `${x}%`,
+                          transform: "translate(-50%, -50%)",
+                          color: color,
+                          fontWeight: "bold",
+                          fontSize: "0.85rem",
+                          whiteSpace: "nowrap",
+                          pointerEvents: "none",
+                        }}
+                      >
+                        {word}
+                      </span>
+                    );
+                  });
+                })()
               ) : (
                 <p style={{ color: "#888" }}>연관어 없음</p>
               )}
@@ -214,7 +250,7 @@ export default function SummaryModal({
                       marginBottom: "6px",
                     }}
                   >
-                    {news.title}
+                    {decodeHtmlEntities(news.title)}
                   </a>
                   <div style={{ fontSize: "0.85rem", color: "#555" }}>
                     {news.press} |{" "}

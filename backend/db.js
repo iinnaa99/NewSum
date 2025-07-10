@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
-dotenv.config();
+if (process.env.KUBERNETES_SERVICE_HOST === undefined) {
+  dotenv.config({ path: ".env" });
+}
 
 import mysql from "mysql2/promise";
 
